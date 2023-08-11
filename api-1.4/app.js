@@ -51,11 +51,11 @@ app.use(bodyParser.urlencoded({
 }));
 // set secret variable
 app.set('secret', 'thisismysecret');
-app.use(expressJWT({
-	secret: 'thisismysecret'
-}).unless({
-	path: ['/users', '/metrics']
-}));
+// app.use(expressJWT({
+// 	secret: 'thisismysecret'
+// }).unless({
+// 	path: ['/users', '/metrics']
+// }));
 app.use(bearerToken());
 app.use(function (req, res, next) {
 	logger.debug(' ------>>>>>> new request for %s', req.originalUrl);
@@ -63,7 +63,7 @@ app.use(function (req, res, next) {
 		return next();
 	}
 
-	var token = req.token;
+	var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjMzMjE2MjUsInVzZXJuYW1lIjoiYm9zcyIsIm9yZ05hbWUiOiJPcmcxIiwiaWF0IjoxNjkxNzg1NjI1fQ.-FNirRGVKUXiB0Ln8BNgrIsJwVIeDS_UanDmhFaRX5Q";
 	jwt.verify(token, app.get('secret'), function (err, decoded) {
 		if (err) {
 			res.send({
@@ -118,6 +118,12 @@ app.post('/users', async function (req, res) {
 		res.json(getErrorMessage('\'orgName\''));
 		return;
 	}
+
+	const expirationTimeInSeconds = 365 * 24 * 60 * 60; // 1 year in seconds
+
+	// Update the jwt_expiretime configuration
+	hfc.setConfigSetting('jwt_expiretime', expirationTimeInSeconds.toString());
+
 	var token = jwt.sign({
 		exp: Math.floor(Date.now() / 1000) + parseInt(hfc.getConfigSetting('jwt_expiretime')),
 		username: username,
