@@ -309,4 +309,4 @@ chaincodeWrite() {
 # chaincodeInvoke
 # sleep 3
 # chaincodeQuery
-# chaincodeWrite
+chaincodeWrite
