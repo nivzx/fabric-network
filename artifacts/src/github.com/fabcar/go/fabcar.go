@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"bytes"
-	"net/http"
+	// "bytes"
+	// "net/http"
 	"strconv"
 
 	"github.com/hyperledger/fabric-chaincode-go/shim"
@@ -53,23 +53,23 @@ func (s *SmartContract) writeLevel(APIstub shim.ChaincodeStubInterface, args []s
 		return shim.Error("Invalid level value. " + err.Error())
 	}
 
-	if levelValue > -50.00 {
-		// Create the JSON data for the HTTP request
-		requestData := map[string]interface{}{
-			"location": location,
-		}
+	// if levelValue > -50.00 {
+	// 	// Create the JSON data for the HTTP request
+	// 	requestData := map[string]interface{}{
+	// 		"location": location,
+	// 	}
 
-		requestBytes, err := json.Marshal(requestData)
-		if err != nil {
-			return shim.Error("Failed to marshal JSON request. " + err.Error())
-		}
+	// 	requestBytes, err := json.Marshal(requestData)
+	// 	if err != nil {
+	// 		return shim.Error("Failed to marshal JSON request. " + err.Error())
+	// 	}
 
-		// Send the POST request
-		_, err = http.Post("http://localhost:8080", "application/json", bytes.NewBuffer(requestBytes))
-		if err != nil {
-			return shim.Error("Failed to send POST request. " + err.Error())
-		}
-	}
+	// 	// Send the POST request
+	// 	_, err = http.Post("http://172.18.0.2:8080", "application/json", bytes.NewBuffer(requestBytes))
+	// 	if err != nil {
+	// 		return shim.Error("Failed to send POST request. " + err.Error())
+	// 	}
+	// }
 
 	signalData := SignalData{Location: location, Level: levelValue}
 	signalDataAsBytes, _ := json.Marshal(signalData)

@@ -287,7 +287,7 @@ chaincodeWrite() {
         --peerAddresses localhost:7051 \
         --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-        -c '{"function": "writeLevel","Args":["80.9999_6.1111","-10.99"]}'
+        -c '{"function": "writeLevel","Args":["80.9999_6.1111","-131.99"]}'
 }
 
 # chaincodeQuery
@@ -302,11 +302,11 @@ chaincodeWrite() {
 # checkCommitReadyness
 # approveForMyOrg2
 # checkCommitReadyness
-# commitChaincodeDefination
-# queryCommitted
-# chaincodeInvokeInit
-# sleep 5
-# chaincodeInvoke
-# sleep 3
-# chaincodeQuery
-chaincodeWrite
+commitChaincodeDefination
+queryCommitted
+chaincodeInvokeInit
+sleep 5
+chaincodeInvoke
+sleep 3
+chaincodeQuery
+# chaincodeWrite
