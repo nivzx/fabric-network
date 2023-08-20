@@ -19,7 +19,6 @@ setGlobalsForPeer0Org1() {
     export CORE_PEER_LOCALMSPID="Org1MSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-    # export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 }
 
@@ -49,18 +48,17 @@ setGlobalsForPeer1Org2() {
 
 presetup() {
     echo Vendoring Go dependencies ...
-    pushd ./artifacts/src/github.com/fabcar/go
+    pushd ./artifacts/src/github.com/token-chaincode/go
     GO111MODULE=on go mod vendor
     popd
     echo Finished vendoring Go dependencies
 }
-# presetup
 
 CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="golang"
 VERSION="1"
-CC_SRC_PATH="./artifacts/src/github.com/fabcar/go"
-CC_NAME="fabcar"
+CC_SRC_PATH="./artifacts/src/github.com/token-chaincode/go"
+CC_NAME="token"
 
 packageChaincode() {
     rm -rf ${CC_NAME}.tar.gz
@@ -70,27 +68,17 @@ packageChaincode() {
         --label ${CC_NAME}_${VERSION}
     echo "===================== Chaincode is packaged on peer0.org1 ===================== "
 }
-# packageChaincode
 
 installChaincode() {
     setGlobalsForPeer0Org1
     peer lifecycle chaincode install ${CC_NAME}.tar.gz
     echo "===================== Chaincode is installed on peer0.org1 ===================== "
 
-    # setGlobalsForPeer1Org1
-    # peer lifecycle chaincode install ${CC_NAME}.tar.gz
-    # echo "===================== Chaincode is installed on peer1.org1 ===================== "
-
     setGlobalsForPeer0Org2
     peer lifecycle chaincode install ${CC_NAME}.tar.gz
     echo "===================== Chaincode is installed on peer0.org2 ===================== "
-
-    # setGlobalsForPeer1Org2
-    # peer lifecycle chaincode install ${CC_NAME}.tar.gz
-    # echo "===================== Chaincode is installed on peer1.org2 ===================== "
 }
 
-# installChaincode
 
 queryInstalled() {
     setGlobalsForPeer0Org1
@@ -101,47 +89,26 @@ queryInstalled() {
     echo "===================== Query installed successful on peer0.org1 on channel ===================== "
 }
 
-# queryInstalled
-
-# --collections-config ./artifacts/private-data/collections_config.json \
-#         --signature-policy "OR('Org1MSP.member','Org2MSP.member')" \
-# --collections-config $PRIVATE_DATA_CONFIG \
 
 approveForMyOrg1() {
     setGlobalsForPeer0Org1
-    # set -x
     peer lifecycle chaincode approveformyorg -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com --tls \
         --collections-config $PRIVATE_DATA_CONFIG \
         --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${VERSION} \
         --init-required --package-id ${PACKAGE_ID} \
         --sequence ${VERSION}
-    # set +x
-
     echo "===================== chaincode approved from org 1 ===================== "
 
 }
 
 getBlock() {
     setGlobalsForPeer0Org1
-    # peer channel fetch 10 -c mychannel -o localhost:7050 \
-    #     --ordererTLSHostnameOverride orderer.example.com --tls \
-    #     --cafile $ORDERER_CA
 
     peer channel getinfo  -c mychannel -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com --tls \
         --cafile $ORDERER_CA
 }
-
-# getBlock
-
-# approveForMyOrg1
-
-# --signature-policy "OR ('Org1MSP.member')"
-# --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA
-# --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles $PEER0_ORG1_CA --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles $PEER0_ORG2_CA
-#--channel-config-policy Channel/Application/Admins
-# --signature-policy "OR ('Org1MSP.peer','Org2MSP.peer')"
 
 checkCommitReadyness() {
     setGlobalsForPeer0Org1
@@ -152,10 +119,6 @@ checkCommitReadyness() {
     echo "===================== checking commit readyness from org 1 ===================== "
 }
 
-# checkCommitReadyness
-
-# --collections-config ./artifacts/private-data/collections_config.json \
-# --signature-policy "OR('Org1MSP.member','Org2MSP.member')" \
 approveForMyOrg2() {
     setGlobalsForPeer0Org2
 
@@ -169,8 +132,6 @@ approveForMyOrg2() {
     echo "===================== chaincode approved from org 2 ===================== "
 }
 
-# approveForMyOrg2
-
 checkCommitReadyness() {
 
     setGlobalsForPeer0Org1
@@ -180,8 +141,6 @@ checkCommitReadyness() {
         --name ${CC_NAME} --version ${VERSION} --sequence ${VERSION} --output json --init-required
     echo "===================== checking commit readyness from org 1 ===================== "
 }
-
-# checkCommitReadyness
 
 commitChaincodeDefination() {
     setGlobalsForPeer0Org1
@@ -195,15 +154,11 @@ commitChaincodeDefination() {
 
 }
 
-# commitChaincodeDefination
-
 queryCommitted() {
     setGlobalsForPeer0Org1
     peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name ${CC_NAME}
 
 }
-
-# queryCommitted
 
 chaincodeInvokeInit() {
     setGlobalsForPeer0Org1
@@ -217,28 +172,9 @@ chaincodeInvokeInit() {
 
 }
 
-# chaincodeInvokeInit
-
 chaincodeInvoke() {
-    # setGlobalsForPeer0Org1
-    # peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
-    # --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n ${CC_NAME} \
-    # --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-    # --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA  \
-    # -c '{"function":"initLedger","Args":[]}'
-
+    
     setGlobalsForPeer0Org1
-
-    ## Create Car
-    # peer chaincode invoke -o localhost:7050 \
-    #     --ordererTLSHostnameOverride orderer.example.com \
-    #     --tls $CORE_PEER_TLS_ENABLED \
-    #     --cafile $ORDERER_CA \
-    #     -C $CHANNEL_NAME -n ${CC_NAME}  \
-    #     --peerAddresses localhost:7051 \
-    #     --tlsRootCertFiles $PEER0_ORG1_CA \
-    #     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-    #     -c '{"function": "createCar","Args":["Car-ABCDEEE", "Audi", "R8", "Red", "Pavan"]}'
 
     ## Init ledger
     peer chaincode invoke -o localhost:7050 \
@@ -249,37 +185,13 @@ chaincodeInvoke() {
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
         -c '{"function": "initLedger","Args":[]}'
-
-    ## Add private data
-    # export CAR=$(echo -n "{\"key\":\"1111\", \"make\":\"Tesla\",\"model\":\"Tesla A1\",\"color\":\"White\",\"owner\":\"pavan\",\"price\":\"10000\"}" | base64 | tr -d \\n)
-    # peer chaincode invoke -o localhost:7050 \
-    #     --ordererTLSHostnameOverride orderer.example.com \
-    #     --tls $CORE_PEER_TLS_ENABLED \
-    #     --cafile $ORDERER_CA \
-    #     -C $CHANNEL_NAME -n ${CC_NAME} \
-    #     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-    #     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-    #     -c '{"function": "createPrivateCar", "Args":[]}' \
-    #     --transient "{\"car\":\"$CAR\"}"
 }
-
-# chaincodeInvoke
 
 chaincodeQuery() {
     setGlobalsForPeer0Org2
 
-    # Query all levels
-    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["getAllLevels"]}'
-
-    # Query Level by Location
-    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readLevel","Args":["80.8112_6.4930"]}'
-}
-
-queryHighLevels() {
-    setGlobalsForPeer0Org2
-
-    # Query high level location
-    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "getHighLocations","Args":["-75.00"]}'
+    # Query Tokens by Location
+    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "getTokensByLocation","Args":["80.9999_6.1111"]}'
 }
 
 chaincodeWrite() {
@@ -294,7 +206,7 @@ chaincodeWrite() {
         --peerAddresses localhost:7051 \
         --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-        -c '{"function": "writeLevel","Args":["80.9999_6.1111","-131.99"]}'
+        -c '{"function": "writeToken","Args":["zKusvbZXcbdASz","80.9999_6.1111"]}'
 }
 
 # chaincodeQuery
@@ -315,6 +227,6 @@ chaincodeInvokeInit
 sleep 5
 chaincodeInvoke
 sleep 3
+chaincodeWrite
+sleep 5
 chaincodeQuery
-# chaincodeWrite
-# queryHighLevels
