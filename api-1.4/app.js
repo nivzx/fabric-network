@@ -261,8 +261,6 @@ app.post('/channels/:channelName/chaincodes', async function (req, res) {
 	res.send(message);
 });
 
-
-
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
 	try {
@@ -314,7 +312,6 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
 		res.send(response_payload)
 	}
 });
-
 
 // Query on chaincode on target peers
 app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
@@ -387,6 +384,50 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName/highLocations', async 
         }
 
         const response = await query.queryChaincode(peer, channelName, chaincodeName, [args], fcn, req.username, req.orgname);
+        res.send(response);
+    } catch (error) {
+        const response_payload = {
+            result: null,
+            error: error.name,
+            errorData: error.message
+        };
+        res.send(response_payload);
+    }
+});
+
+// Query tokens by location
+app.get('/channels/:channelName/chaincodes/:chaincodeName/tokensByLocation', async function (req, res) {
+    try {
+        logger.debug('================ GET TOKENS BY LOCATION ======================');
+        var channelName = req.params.channelName;
+        var chaincodeName = req.params.chaincodeName;
+        let location = req.query.location; // Location for querying tokens
+        let fcn = 'getTokensByLocation'; // The function to invoke
+        let peer = req.query.peer;
+
+        logger.debug('channelName : ' + channelName);
+        logger.debug('chaincodeName : ' + chaincodeName);
+        logger.debug('fcn : ' + fcn);
+        logger.debug('location : ' + location);
+
+        if (!chaincodeName) {
+            res.json(getErrorMessage('\'chaincodeName\''));
+            return;
+        }
+        if (!channelName) {
+            res.json(getErrorMessage('\'channelName\''));
+            return;
+        }
+        if (!fcn) {
+            res.json(getErrorMessage('\'fcn\''));
+            return;
+        }
+        if (!location) {
+            res.json(getErrorMessage('\'location\''));
+            return;
+        }
+
+        const response = await query.queryChaincode(peer, channelName, chaincodeName, [location], fcn, req.username, req.orgname);
         res.send(response);
     } catch (error) {
         const response_payload = {
