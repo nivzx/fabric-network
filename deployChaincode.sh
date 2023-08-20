@@ -275,6 +275,13 @@ chaincodeQuery() {
     # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readLevel","Args":["80.8112_6.4930"]}'
 }
 
+queryHighLevels() {
+    setGlobalsForPeer0Org2
+
+    # Query high level location
+    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "getHighLocations","Args":["-75.00"]}'
+}
+
 chaincodeWrite() {
     setGlobalsForPeer0Org1
 
@@ -302,11 +309,12 @@ chaincodeWrite() {
 # checkCommitReadyness
 # approveForMyOrg2
 # checkCommitReadyness
-commitChaincodeDefination
-queryCommitted
-chaincodeInvokeInit
-sleep 5
-chaincodeInvoke
-sleep 3
-chaincodeQuery
+# commitChaincodeDefination
+# queryCommitted
+# chaincodeInvokeInit
+# sleep 5
+# chaincodeInvoke
+# sleep 3
+# chaincodeQuery
 # chaincodeWrite
+queryHighLevels

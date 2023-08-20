@@ -354,6 +354,51 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
 	res.send(message);
 });
 
+// Query for SignalData objects with high levels
+app.get('/channels/:channelName/chaincodes/:chaincodeName/highLocations', async function (req, res) {
+    try {
+        logger.debug('================ GET HIGH LOCATIONS ======================');
+        var channelName = req.params.channelName;
+        var chaincodeName = req.params.chaincodeName;
+        let args = req.query.args; // This should be the threshold value
+        let fcn = 'getHighLocations'; // The function to invoke
+        let peer = req.query.peer;
+
+        logger.debug('channelName : ' + channelName);
+        logger.debug('chaincodeName : ' + chaincodeName);
+        logger.debug('fcn : ' + fcn);
+        logger.debug('args : ' + args);
+
+        if (!chaincodeName) {
+            res.json(getErrorMessage('\'chaincodeName\''));
+            return;
+        }
+        if (!channelName) {
+            res.json(getErrorMessage('\'channelName\''));
+            return;
+        }
+        if (!fcn) {
+            res.json(getErrorMessage('\'fcn\''));
+            return;
+        }
+        if (!args) {
+            res.json(getErrorMessage('\'args\''));
+            return;
+        }
+
+        const response = await query.queryChaincode(peer, channelName, chaincodeName, [args], fcn, req.username, req.orgname);
+        res.send(response);
+    } catch (error) {
+        const response_payload = {
+            result: null,
+            error: error.name,
+            errorData: error.message
+        };
+        res.send(response_payload);
+    }
+});
+
+
 //  Query Get Block by BlockNumber
 app.get('/channels/:channelName/blocks/:blockId', async function (req, res) {
 	logger.debug('==================== GET BLOCK BY NUMBER ==================');
