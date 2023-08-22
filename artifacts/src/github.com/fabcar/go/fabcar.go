@@ -56,7 +56,6 @@ func (s *SmartContract) writeLevel(APIstub shim.ChaincodeStubInterface, args []s
 	}
 
 	// if levelValue > -50.00 {
-	// 	// Create the JSON data for the HTTP request
 	// 	requestData := map[string]interface{}{
 	// 		"location": location,
 	// 	}
@@ -66,12 +65,18 @@ func (s *SmartContract) writeLevel(APIstub shim.ChaincodeStubInterface, args []s
 	// 		return shim.Error("Failed to marshal JSON request. " + err.Error())
 	// 	}
 
-	// 	// Send the POST request
-	// 	_, err = http.Post("http://172.18.0.2:8080", "application/json", bytes.NewBuffer(requestBytes))
+	// 	fmt.Println("JSON Request:", string(requestBytes)) // Debug print
+
+	// 	response, err := http.Post("http://localhost:3000/send-notifications", "application/json", bytes.NewBuffer(requestBytes))
 	// 	if err != nil {
 	// 		return shim.Error("Failed to send POST request. " + err.Error())
 	// 	}
+		
+	// 	defer response.Body.Close()
+
+	// 	fmt.Println("Response Status:", response.Status) // Debug print
 	// }
+
 
 	signalData := SignalData{Location: location, Level: levelValue}
 	signalDataAsBytes, _ := json.Marshal(signalData)
