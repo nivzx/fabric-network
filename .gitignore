@@ -123,7 +123,7 @@ artifacts/src/github.com/token-chaincode/go/vendor
 artifacts/src/github.com/fabcar/go/go.sum
 artifacts/src/github.com/token-chaincode/go/go.sum
 crypto/fabric-client-kv-org1
-fabcar.tar.gz
+level.tar.gz
 token.tar.gz
 artifacts/src/github.com/fabcar_contract_api/go/vendor
 artifacts/src/github.com/fabcar_contract_api/go/go.sum

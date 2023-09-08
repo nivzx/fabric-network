@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Step 1: Delete files
-rm -f ./fabcar.tar.gz ./token.tar.gz ./channel-artifacts/mychannel.block
+rm -f ./level.tar.gz ./token.tar.gz ./channel-artifacts/mychannel.block
 rm -r -f ./artifacts/src/github.com/fabcar/go/vendor ./artifacts/src/github.com/token-chaincode/go/vendor
 
 # Step 2: Move to directory
@@ -23,11 +23,11 @@ cd ..
 sleep 10
 
 # Step 7: Vendoring Go dependencies for fabcar
-echo "Vendoring Go dependencies for fabcar ..."
+echo "Vendoring Go dependencies for level ..."
 pushd ./artifacts/src/github.com/fabcar/go
 GO111MODULE=on go mod vendor
 popd
-echo "Finished vendoring Go dependencies for fabcar"
+echo "Finished vendoring Go dependencies for level"
 
 # Step 8: Run deployChaincode.sh and wait
 ./deployChaincode.sh

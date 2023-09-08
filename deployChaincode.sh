@@ -60,7 +60,7 @@ CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="golang"
 VERSION="1"
 CC_SRC_PATH="./artifacts/src/github.com/fabcar/go"
-CC_NAME="fabcar"
+CC_NAME="level"
 
 packageChaincode() {
     rm -rf ${CC_NAME}.tar.gz
