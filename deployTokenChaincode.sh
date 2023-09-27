@@ -224,9 +224,9 @@ checkCommitReadyness
 commitChaincodeDefination
 queryCommitted
 chaincodeInvokeInit
-sleep 5
+sleep 15
 chaincodeInvoke
-sleep 3
+sleep 13
 chaincodeWrite
-sleep 5
+sleep 15
 chaincodeQuery

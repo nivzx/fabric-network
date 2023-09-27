@@ -99,6 +99,13 @@ queryInstalled() {
     PACKAGE_ID=$(sed -n "/${CC_NAME}_${VERSION}/{s/^Package ID: //; s/, Label:.*$//; p;}" log.txt)
     echo PackageID is ${PACKAGE_ID}
     echo "===================== Query installed successful on peer0.org1 on channel ===================== "
+
+    setGlobalsForPeer0Org2
+    peer lifecycle chaincode queryinstalled >&log.txt
+    cat log.txt
+    PACKAGE_ID=$(sed -n "/${CC_NAME}_${VERSION}/{s/^Package ID: //; s/, Label:.*$//; p;}" log.txt)
+    echo PackageID is ${PACKAGE_ID}
+    echo "===================== Query installed successful on peer0.org2 on channel ===================== "
 }
 
 # queryInstalled
@@ -275,6 +282,13 @@ chaincodeQuery() {
     # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readLevel","Args":["80.8112_6.4930"]}'
 }
 
+chaincodeQueryByLocation() {
+    setGlobalsForPeer0Org2
+
+    # Query Level by Location
+    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readLevel","Args":["80.8112_6.4930"]}'
+}
+
 queryHighLevels() {
     setGlobalsForPeer0Org2
 
@@ -294,7 +308,7 @@ chaincodeWrite() {
         --peerAddresses localhost:7051 \
         --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-        -c '{"function": "writeLevel","Args":["80.9999_6.1111","-131.99"]}'
+        -c '{"function": "writeLevel","Args":["80.8112_6.4930","-131.99"]}'
 }
 
 # chaincodeQuery
@@ -312,9 +326,10 @@ checkCommitReadyness
 commitChaincodeDefination
 queryCommitted
 chaincodeInvokeInit
-sleep 5
+sleep 15
 chaincodeInvoke
-sleep 3
+sleep 13
 chaincodeQuery
-# chaincodeWrite
-# queryHighLevels
+chaincodeWrite
+queryHighLevels
+chaincodeQueryByLocation
