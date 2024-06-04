@@ -45,3 +45,11 @@ echo "Finished vendoring Go dependencies for token-chaincode"
 sleep 25
 
 echo "Script execution completed."
+
+# Step 11: Make API call
+curl -X POST http://localhost:4000/users \
+-H "Content-Type: application/json" \
+-d '{
+  "username": "boss",
+  "orgName": "Org1"
+}'

@@ -286,7 +286,7 @@ chaincodeQueryByLocation() {
     setGlobalsForPeer0Org2
 
     # Query Level by Location
-    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readLevel","Args":["80.8112_6.4930"]}'
+    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readLevel","Args":["80.81121_6.49301"]}'
 }
 
 queryHighLevels() {
@@ -308,7 +308,7 @@ chaincodeWrite() {
         --peerAddresses localhost:7051 \
         --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-        -c '{"function": "writeLevel","Args":["80.8112_6.4930","-131.99"]}'
+        -c '{"function": "writeLevel","Args":["80.81121_6.49301","-131.99"]}'
 }
 
 # chaincodeQuery
